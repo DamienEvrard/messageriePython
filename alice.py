@@ -54,7 +54,7 @@ def dechiffrerAsym(message) :
     cipher = PKCS1_OAEP.new(private_key)
 
     # On décrypte le message avec la clé privée
-    message_dechiffre = cipher.decrypt(message) 
+    message_dechiffre = cipher.decrypt(message[0]) 
 
     return message_dechiffre
 
@@ -75,7 +75,7 @@ def envoyerAsym(message):
 
     adresse_serveur = (ip, port)
     messageEncrypted=chiffrerAsym(message)
-
+    print(messageEncrypted)
     s.sendto(messageEncrypted, adresse_serveur)
     #s.sendall(messageEncrypted.encode())
 
