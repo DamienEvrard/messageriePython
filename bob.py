@@ -85,7 +85,7 @@ def recevoirSym():
     return messageDecrypted
 
 
-# challenge la machine cible pour sassurer de son identité 
+# challenge la machine cible pour s'assurer de son identité 
 # et recupere la clef symetrique pour la suite des echanges
 def challenge() :
 
