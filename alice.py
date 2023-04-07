@@ -155,13 +155,19 @@ while 1:
             print("Challenge non OK") 
 
     elif choix == "2":
-        message = input("quel est le message à envoyer ? : ")
-        envoyerSym(message)
+        if ip=="":
+            print("vous devez dabord saisir une ip cible")
+        else:
+            message = input("quel est le message à envoyer ? : ")
+            envoyerSym(message)
 
     elif choix == "3":
-        messageRecu=""
-        messageRecu, clefSym=recevoirSym()
-        print("le message recu est : "+messageRecu)
+        if ip=="":
+            print("vous devez dabord saisir une ip cible")
+        else:
+            messageRecu=""
+            messageRecu, clefSym=recevoirSym()
+            print("le message recu est : "+messageRecu)
 
     elif choix == "4":
         s.close()

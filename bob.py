@@ -15,7 +15,7 @@ from Crypto.Hash import SHA256
 import pickle
 import socket
 import sys
-
+from Crypto import get_random_bytes
 
 def chiffrerAsym(message) :
 
@@ -105,6 +105,33 @@ def challenge() :
     else :
         return 0, ""
     
+# permet de chiffrer un message grâce à la clé symétrique
+def chiffrerSym(message) :
+
+    # On crée l'encrypteur à partir de la clé symétrique
+    cipher = AES.new(clefSym.encode('utf-8'), AES.MODE_CFB, 'This is an IV456'.encode('utf-8'))
+
+    # On chiffre le message avec la clé symétrique
+    cipher_text = cipher.encrypt(message)
+
+    return cipher_text
+
+# permet de déchiffrer un message grâce à la clé symétrique
+def dechiffrerSym(message) :
+
+    # On crée le décrypteur à partir de la clé symétrique
+    cipher = AES.new(clefSym.encode('utf-8'), AES.MODE_CFB, 'This is an IV456'.encode('utf-8'))
+    
+    # On déchiffre le message avec la clé symétrique
+    message_dechiffre = cipher.decrypt(message)
+
+    return message_dechiffre
+
+
+#genere une clef symetrique de taille 32 bytes
+def generationClefSym():
+    return get_random_bytes(32)
+    
 #_______________________________________________________________________________________________________________
 
 ip=""
@@ -123,12 +150,12 @@ while 1:
     if choix == "1":
         ip=input("saisir l'ip de la machine cible")
         s.connect((ip, port))
-        resultat, clefSym = challenge()
-        if resultat == 1 :
-            print("challenge OK")
-        else:
-            s.close()
-            print("challenge non OK") 
+        messageChallenge=recevoirAsym()
+        clefSym=generationClefSym()
+        messageChallenge+="|||"
+        messageChallenge+=clefSym
+        envoyerAsym(messageChallenge)
+        
 
     elif choix == "2":
         if ip=="":
