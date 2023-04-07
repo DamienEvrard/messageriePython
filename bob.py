@@ -141,14 +141,14 @@ clefSym=""
 
 #boucle infinie qui affiche un menu afin de selectionner l'action a effectuer
 while 1:
-    print("1: saisir l'ip de la machine cible")
-    print("2: envoyer un message")
-    print("3: recevoir un message")
-    print("4: quitter le programme")
-    choix=input("que voulez-vous faire:")
+    print("1: Saisir l'ip de la machine cible")
+    print("2: Envoyer un message")
+    print("3: Recevoir un message")
+    print("4: Quitter le programme")
+    choix=input("Que voulez-vous faire:")
     
     if choix == "1":
-        ip=input("saisir l'ip de la machine cible")
+        ip=input("saisir l'ip de la machine cible : ")
         s.connect((ip, port))
         resultat= challenge()
         if resultat == 1:
@@ -160,18 +160,18 @@ while 1:
 
     elif choix == "2":
         if ip=="":
-            print("vous devez dabord saisir une ip cible")
+            print("Vous devez dabord saisir une ip cible ! ")
         else:
-            message = input("quel est le message à envoyer ? ")
+            message = input("Quel est le message à envoyer ? ")
             envoyerSym(message)
 
     elif choix == "3":
         if ip=="":
-            print("vous devez dabord saisir une ip cible")
+            print("Vous devez dabord saisir une ip cible !")
         else:
             messageRecu=""
             messageRecu, clefSym=recevoirSym()
-            print("le message recu est: "+messageRecu)
+            print("Le message recu est : "+messageRecu)
 
     elif choix == "4":
         s.close()

@@ -145,7 +145,7 @@ while 1:
     choix=input("Que voulez-vous faire ? :")
     
     if choix == "1":
-        ip=input("Saisir l'ip de la machine cible")
+        ip=input("Saisir l'ip de la machine cible : ")
         s.connect((ip, port))
         resultat, clefSym, challengeBob = challenge()
         if resultat == 1:
@@ -157,14 +157,14 @@ while 1:
 
     elif choix == "2":
         if ip=="":
-            print("vous devez dabord saisir une ip cible")
+            print("Vous devez dabord saisir une ip cible !")
         else:
             message = input("quel est le message à envoyer ? : ")
             envoyerSym(message)
 
     elif choix == "3":
         if ip=="":
-            print("vous devez dabord saisir une ip cible")
+            print("Vous devez dabord saisir une ip cible !")
         else:
             messageRecu=""
             messageRecu, clefSym=recevoirSym()
