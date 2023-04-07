@@ -1,10 +1,3 @@
-#prompt message pour get IP cible
-#initialiser communication en asymetrique
-#challenger 
-#si challenge ok
-#envoyer clef symetrique
-#communiquer les messages prompt
-
 import math
 import random
 import string
@@ -61,21 +54,17 @@ def envoyerSym(message):
 
     adresse_serveur = (ip, port)
     s.sendto(messageEncrypted, adresse_serveur)
-    #s.sendall(messageEncrypted.encode())
+    
 
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
 # qui sera dechiffré grace a la la clé privée de l'émetteur
 def recevoirAsym():
 
-    # s.bind((ip, port))
-    # s.listen(1)
-    # conn, addr = s.accept()
-
     serveur_adress = ('', port)
     s.bind(serveur_adress)
 
     message, addressEnvoi = s.recvfrom(4096)
-    #conn.close() 
+    
     message_decrypte=dechiffrerAsym(message)
 
     return message_decrypte
@@ -83,15 +72,12 @@ def recevoirAsym():
 # fait attendre la machine jusqu'a reception d'un message chiffré qui sera dechiffré 
 # grace a la la clef symetrique obtenue lors de challenge avec la machine cible
 def recevoirSym():
-
-    # s.bind((ip, port))
-    # s.listen(1)
-    # conn, addr = s.accept()
+    
     print ("réception")
     data = s.recvfrom(1024)
     print(data)
     message = str(data)
-    #conn.close() 
+    
     messageDecrypted=dechiffrerSym(message)
     return messageDecrypted
 
