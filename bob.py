@@ -89,21 +89,21 @@ def recevoirSym():
 # et recupere la clef symetrique pour la suite des echanges
 def challenge() :
 
+    challengeAlice=recevoirAsym()
+    clefSym=generationClefSym()
     #génération du challenge : chaîne de caractère aléatoire de 10 caractères
     letters = string.ascii_lowercase
-    challenge_envoye = ''.join(random.choice(letters) for i in range(10))
-
-    # envoyerAsym prend en paramètre le challenge en clair, le chiffre et l'envoie
-    envoyerAsym(challenge_envoye)
-
-    #récupération du challenge déchiffré du récepteur
-    challenge_recu, cle = recevoirAsym().split("|||")
+    challengeBob = ''.join(random.choice(letters) for i in range(10))
+    #construction du message
+    messageEnvoye=challengeAlice + "|||"+ clefSym + "|||"+ challengeBob
+    envoyerAsym(messageEnvoye)
+    challenge_recu=recevoirSym()
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
-    if challenge_envoye == challenge_recu :
-        return 1, cle
+    if challengeBob == challenge_recu :
+        return 1
     else :
-        return 0, ""
+        return 0
     
 # permet de chiffrer un message grâce à la clé symétrique
 def chiffrerSym(message) :
@@ -150,11 +150,12 @@ while 1:
     if choix == "1":
         ip=input("saisir l'ip de la machine cible")
         s.connect((ip, port))
-        messageChallenge=recevoirAsym()
-        clefSym=generationClefSym()
-        messageChallenge+="|||"
-        messageChallenge+=clefSym
-        envoyerAsym(messageChallenge)
+        resultat= challenge()
+        if resultat == 1:
+            print("challenge OK")
+        else:
+            s.close()
+            print("challenge non OK")
         
 
     elif choix == "2":

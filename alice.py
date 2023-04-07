@@ -121,13 +121,13 @@ def challenge() :
     envoyerAsym(challenge_envoye)
 
     #récupération du challenge et de la clé symétrique déchiffrés, du récepteur
-    challenge_recu, cle_symetrique = recevoirAsym().split("|||")
+    challenge_recu, cle_symetrique, chalenge_bob = recevoirAsym().split("|||")
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
     if challenge_envoye == challenge_recu :
-        return 1, cle_symetrique
+        return 1, cle_symetrique, challengeBob
     else :
-        return 0, ""
+        return 0, "", ""
     
 #_______________________________________________________________________________________________________________
 
@@ -147,9 +147,10 @@ while 1:
     if choix == "1":
         ip=input("Saisir l'ip de la machine cible")
         s.connect((ip, port))
-        resultat, clefSym = challenge()
-        if resultat == 1 :
+        resultat, clefSym, challengeBob = challenge()
+        if resultat == 1:
             print("Challenge OK")
+            envoyerSym(challengeBob)
         else:
             s.close()
             print("Challenge non OK") 
