@@ -98,7 +98,7 @@ def recevoirAsym():
     # s.listen(1)
     # conn, addr = s.accept()
 
-    data = s.recvfrom(4096)
+    data = s.recvfrom(1024)
     message = str(data)
     #conn.close() 
     messageDecrypted=dechiffrerAsym(message)
@@ -112,7 +112,7 @@ def recevoirSym():
     # s.listen(1)
     # conn, addr = s.accept()
 
-    data = s.recvfrom(4096)
+    data = s.recvfrom(1024)
     message = str(data)
     #conn.close() 
     messageDecrypted=dechiffrerSym(message)
