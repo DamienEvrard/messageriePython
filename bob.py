@@ -49,14 +49,14 @@ def dechiffrerAsym(message) :
 # la clé publique du récepteur
 def envoyerAsym(message):
     messageEncrypted=chiffrerAsym(message)
-    s.sendall(messageEncrypted.encode())
+    s.sendall(messageEncrypted)
 
 
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
     messageEncrypted=chiffrerSym(message)
-    s.sendall(messageEncrypted.encode())
+    s.sendall(messageEncrypted)
 
 
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
@@ -149,7 +149,7 @@ while 1:
     
     if choix == "1":
         ip=input("saisir l'ip de la machine cible : ")
-        s.connect((ip, port))
+        #s.connect((ip, port))
         resultat= challenge()
         if resultat == 1:
             print("challenge OK")
