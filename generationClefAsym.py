@@ -5,9 +5,9 @@ import pickle
 
 
 
-print("1: emeteur")
+print("1: emetteur")
 print("2: recepteur")
-choix=input("quel est le role de cette machine?")
+choix=input("quel est le rôle de cette machine ?")
 
 if(choix==1):
     nom = "e"
