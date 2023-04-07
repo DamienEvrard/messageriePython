@@ -15,7 +15,7 @@ from Crypto.Hash import SHA256
 import pickle
 import socket
 import sys
-from Crypto import get_random_bytes
+from Crypto.Random import get_random_bytes
 
 def chiffrerAsym(message) :
 
@@ -141,6 +141,7 @@ clefSym=""
 
 #boucle infinie qui affiche un menu afin de selectionner l'action a effectuer
 while 1:
+    print(ip)
     print("1: saisir l'ip de la machine cible")
     print("2: envoyer un message")
     print("3: recevoir un message")
@@ -149,7 +150,7 @@ while 1:
     
     if choix == "1":
         ip=input("saisir l'ip de la machine cible")
-        s.connect((ip, port))
+        #s.connect((ip, port))
         resultat= challenge()
         if resultat == 1:
             print("challenge OK")
@@ -162,7 +163,7 @@ while 1:
         if ip=="":
             print("vous devez dabord saisir une ip cible")
         else:
-            message = input("quel est le message à envoyer ? ")
+            message = input("quel est le message à envoyer ? \n")
             envoyerSym(message)
 
     elif choix == "3":
