@@ -148,7 +148,7 @@ def generationClefSym():
 #_______________________________________________________________________________________________________________
 
 ip=""
-port = 1234
+port = 4444
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clefSym=""
 
