@@ -55,7 +55,7 @@ def envoyerAsym(message):
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
-    messageEncrypted=encryptAES(message)
+    messageEncrypted=chiffrerSym(message)
     s.sendall(messageEncrypted.encode())
 
 
@@ -81,7 +81,7 @@ def recevoirSym():
 
     message = conn.recv(1024).decode()
     conn.close() 
-    messageDecrypted=decryptAES(message)
+    messageDecrypted=dechiffrerSym(message)
     return messageDecrypted
 
 
