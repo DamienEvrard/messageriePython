@@ -73,7 +73,7 @@ def dechiffrerSym(message) :
 # la clé publique du récepteur
 def envoyerAsym(message):
     messageEncrypted=chiffrerAsym(message)
-    s.sendall(messageEncrypted.encode())
+    s.sendall(messageEncrypted)
 
 
 # permet d'envoyer un message (string) en le chiffrant avec 
@@ -149,7 +149,7 @@ while 1:
     if choix == "1":
         ip=input("Saisir l'ip de la machine cible : ")
         print(ip)
-        #s.connect((ip, port))
+        s.connect((ip, port))
         resultat, clefSym, challengeBob = challenge()
         if resultat == 1:
             print("Challenge OK")
