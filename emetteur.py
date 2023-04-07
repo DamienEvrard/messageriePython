@@ -5,6 +5,9 @@
 #envoyer clef symetrique
 #communiquer les messages prompt
 
+import math
+import random
+import string
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.PublicKey import RSA
@@ -15,22 +18,50 @@ import socket
 import sys
 
 
-# permet denvoyer un message (string) en le chiffrent avec 
-# la clef publique de la machine cible
+def chiffrerAsym(message) :
+
+    #chiffrement avec la clé publique du récepteur
+    with open("public_key_r.pem", "rb") as f:
+        public_key_recepteur = RSA.import_key(f.read())
+
+    # On crée l'encrypteur à partir de la clé publique
+    cipher_message = PKCS1_OAEP.new(public_key_recepteur)
+
+    # On chiffre le challenge avec la clé publique
+    ciphertext_message = cipher_message.encrypt(message.encode())
+
+    return ciphertext_message
+
+def dechiffrerAsym(message) :
+
+    # On récupère la clé privée de l'émetteur depuis le fichier de clé
+    with open("private_key_e.pem", "rb") as f:
+        private_key = RSA.import_key(f.read())
+
+    # On crée le décrypteur à partir de la clé privée
+    cipher = PKCS1_OAEP.new(private_key)
+
+    # On décrypte le message avec la clé privée
+    message_dechiffre = cipher.decrypt(message) 
+
+    return message_dechiffre
+
+# permet d'envoyer un message (string) en le chiffrant avec 
+# la clé publique du récepteur
 def envoyerAsym(message):
-    messageEncrypted=encryptRSA(message)
+    messageEncrypted=chiffrerAsym(message)
     s.sendall(messageEncrypted.encode())
 
 
-# permet denvoyer un message (string) en le chiffrent avec 
-# la clef symetrique obtenue lors de challenge avec la machine cible
+# permet d'envoyer un message (string) en le chiffrant avec 
+# la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
     messageEncrypted=encryptAES(message)
     s.sendall(messageEncrypted.encode())
 
 
-# fait attendre la machine jusqu'a reception d'un message chiffré 
-# qui sera dechiffré grace a la la clef privée de la machine
+# fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
+# qui sera dechiffré grace a la la clé privée de l'émetteur
 def recevoirAsym():
     s.bind((ip, port))
     s.listen(1)
@@ -38,7 +69,7 @@ def recevoirAsym():
 
     message = conn.recv(1024).decode()
     conn.close() 
-    messageDecrypted=decryptRSA(message)
+    messageDecrypted=dechiffrerAsym(message)
     return messageDecrypted
 
 
@@ -58,27 +89,20 @@ def recevoirSym():
 # challenge la machine cible pour sassurer de son identité 
 # et recupere la clef symetrique pour la suite des echanges
 def challenge() :
-    #génération du challenge
-    challenge = input('Saisissez une phrase de challenge : ')
-    #chiffrement avec la clé publique du récepteur
-    with open("public_key_2.pem", "rb") as f:
-        public_key_recepteur = RSA.import_key(f.read())
 
-    # On crée l'encrypteur à partir de la clé publique
-    cipher_challenge = PKCS1_OAEP.new(public_key_recepteur)
+    #génération du challenge : chaîne de caractère aléatoire de 10 caractères
+    letters = string.ascii_lowercase
+    challenge_envoye = ''.join(random.choice(letters) for i in range(10))
 
-    # On chiffre le message avec la clé publique
-    ciphertext_challenge = cipher_challenge.encrypt(challenge.encode())
+    # envoyerAsym prend en paramètre le challenge en clair, le chiffre et l'envoie
+    envoyerAsym(challenge_envoye)
 
-    #envoi
-    envoyerAsym(ciphertext_challenge,ip)
-
-    #récupération du message déchiffré du récepteur
-    message_decrpyte, clef = recevoirAsym().split("|||")
+    #récupération du challenge déchiffré du récepteur
+    challenge_recu, cle = recevoirAsym().split("|||")
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
-    if challenge == message_decrpyte :
-        return 1, clef
+    if challenge_envoye == challenge_recu :
+        return 1, cle
     else :
         return 0, ""
     
