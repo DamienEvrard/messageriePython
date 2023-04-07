@@ -138,7 +138,7 @@ def generationClefSym():
 
 ip=""
 port = 1234
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clefSym=""
 
 #boucle infinie qui affiche un menu afin de selectionner l'action a effectuer

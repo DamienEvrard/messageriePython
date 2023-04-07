@@ -1,7 +1,7 @@
 import socket
 
 # Création de la socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.DGRAM)
 
 # Adresse IP et port du serveur
 ip = '192.168.43.217'
