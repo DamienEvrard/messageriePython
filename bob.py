@@ -47,14 +47,19 @@ def dechiffrerAsym(message) :
 # la clé publique du récepteur
 def envoyerAsym(message):
     messageEncrypted=chiffrerAsym(message)
-    s.sendall(messageEncrypted)
+    print(messageEncrypted)
+    adresse_serveur = (ip, port)
+    s.sendto(messageEncrypted, adresse_serveur)
+    print("message envoyé")
 
 
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
     messageEncrypted=chiffrerSym(message)
-    s.sendall(messageEncrypted)
+
+    adresse_serveur = (ip, port)
+    s.sendto(messageEncrypted, adresse_serveur)
 
 
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
@@ -77,8 +82,9 @@ def recevoirSym():
     # s.bind((ip, port))
     # s.listen(1)
     # conn, addr = s.accept()
-
+    print ("réception")
     data = s.recvfrom(1024)
+    print(data)
     message = str(data)
     #conn.close() 
     messageDecrypted=dechiffrerSym(message)
@@ -95,9 +101,13 @@ def challenge() :
     letters = string.ascii_lowercase
     challengeBob = ''.join(random.choice(letters) for i in range(10))
     #construction du message
-    messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym) + "|||"+ str(challengeBob)
+    #messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym) + "|||"+ str(challengeBob)
     
+    messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym)
+
     envoyerAsym(messageEnvoye)
+
+
     challenge_recu=recevoirSym()
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
@@ -130,7 +140,7 @@ def dechiffrerSym(message) :
 
 #genere une clef symetrique de taille 32 bytes
 def generationClefSym():
-    return get_random_bytes(32)
+    return get_random_bytes(10)
     
 #_______________________________________________________________________________________________________________
 
