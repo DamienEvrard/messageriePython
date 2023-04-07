@@ -3,20 +3,24 @@ import socket
 # Création de la socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Connexion à l'adresse IP et au port spécifiés
-ip = '127.0.0.1'
+# Adresse IP et port du serveur
+ip = '192.168.43.217'
 port = 1234
-s.connect((ip, port))
 
-# Envoi des données
-message = 'Hello, world!'
-s.sendall(message.encode())
+# Lier la socket à l'adresse IP et au port spécifiés
+s.bind((ip, port))
 
-# Réception des données envoyées par le serveur
-data = s.recv(1024)
+# Nombre maximal de connexions en attente
+s.listen(1)
+print(f"Serveur en attente de connexion sur {ip}:{port}")
 
-# Affichage des données reçues
-print("Message reçu :", data.decode())
+# Accepter la connexion
+conn, addr = s.accept()
+print(f"Connexion établie avec {addr[0]}:{addr[1]}")
 
-# Fermeture de la socket
-s.close()
+# Recevoir les données
+data = conn.recv(1024).decode()
+print(f"Message reçu : {data}")
+
+# Fermer la connexion
+conn.close()
