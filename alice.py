@@ -161,7 +161,7 @@ while 1:
         ip=input("Saisir l'ip de la machine cible : ")
         print(ip)
         #s.connect((ip, port))
-        adresse_serveur=("",port)
+        adresse_serveur=(ip,port)
         s.bind(adresse_serveur)
 
         resultat, clefSym, challengeBob = challenge()
