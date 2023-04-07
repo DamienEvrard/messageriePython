@@ -6,7 +6,7 @@ import pickle
 
 print("1: Alice")
 print("2: Bob")
-choix=input("quel est le role de cette machine?\n")
+choix=input("Qui êtes-vous ?\n")
 
 if(choix=="1"):
     nom = "alice"
