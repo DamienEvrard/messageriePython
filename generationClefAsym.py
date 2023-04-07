@@ -16,7 +16,7 @@ else:
 #creer un couple de clefs (publique et privée) pour pouvoir communiquer avec un chiffrement asymétrique
 #hash_object = SHA256.new(data=b'First')
 #print(hash_object.hexdigest())
-key = RSA.generate(4096)
+key = RSA.generate(1024)
 #hash_object = SHA256.new(data=pickle.dumps(key.publickey().export_key('DER')))
 
 with open ("private_key_"+nom+".pem", "wb") as f:
