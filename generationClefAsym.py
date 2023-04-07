@@ -7,9 +7,12 @@ import pickle
 
 print("1: emeteur")
 print("2: recepteur")
-nom=input("quel est le role de cette machine?")
+choix=input("quel est le role de cette machine?")
 
-
+if(choix==1):
+    nom = "e"
+else:
+    nom="r"
 
 #creer un couple de clefs (publique et privée) pour pouvoir communiquer avec un chiffrement asymétrique
 hash_object = SHA256.new(data=b'First')
