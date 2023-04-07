@@ -4,15 +4,14 @@ import pickle
 
 
 
+print("1: Alice")
+print("2: Bob")
+choix=input("quel est le role de cette machine?\n")
 
-print("1: emeteur")
-print("2: recepteur")
-choix=input("quel est le role de cette machine?")
-
-if(choix==1):
-    nom = "e"
+if(choix=="1"):
+    nom = "alice"
 else:
-    nom="r"
+    nom="bob"
 
 #creer un couple de clefs (publique et privée) pour pouvoir communiquer avec un chiffrement asymétrique
 hash_object = SHA256.new(data=b'First')
@@ -22,6 +21,8 @@ hash_object = SHA256.new(data=pickle.dumps(key.publickey().export_key('DER')))
 
 with open ("private_key_"+nom+".pem", "w") as prv_file:
     print("{}".format(key.exportKey()), file=prv_file)
+    print("Clef privée généré")
 
 with open ("public_key_"+nom+".pem", "w") as pub_file:
     print("{}".format(key.publickey().exportKey()), file=pub_file)
+    print("Clef publique généré")
