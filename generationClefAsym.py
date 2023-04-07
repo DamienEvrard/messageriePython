@@ -19,10 +19,12 @@ else:
 key = RSA.generate(1024)
 #hash_object = SHA256.new(data=pickle.dumps(key.publickey().export_key('DER')))
 
-with open ("private_key_"+nom+".pem", "w") as prv_file:
+with open ("private_key_"+nom+".pem", "wb") as f:
+    f.write(key.export_key())
     #print("{}".format(key.exportKey()), file=prv_file)
     print("Clef privée générée")
 
-with open ("public_key_"+nom+".pem", "w") as pub_file:
+with open ("public_key_"+nom+".pem", "wb") as f:
+    f.write(key.publickey().export_key())
     #print("{}".format(key.publickey().exportKey()), file=pub_file)
     print("Clef publique générée")
