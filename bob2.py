@@ -87,7 +87,7 @@ def recevoirSym():
     # s.bind((ip, port))
     # s.listen(1)
     # conn, addr = s.accept()
-    print ("réception")
+    print ("réception Symetrique")
     data = s.recvfrom(1024)
     print(data)
     message = str(data)
