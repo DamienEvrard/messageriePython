@@ -54,7 +54,8 @@ def dechiffrerAsym(message) :
     cipher = PKCS1_OAEP.new(private_key)
 
     # On décrypte le message avec la clé privée
-    message_dechiffre = cipher.decrypt(message[0]) 
+    print("--------------------"+str(message))
+    message_dechiffre = cipher.decrypt(message) 
 
     return message_dechiffre
 
@@ -94,7 +95,7 @@ def envoyerSym(message):
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
 # qui sera dechiffré grace a la la clé privée de l'émetteur
 def recevoirAsym():
-   # s.bind((ip, port))
+    # s.bind((ip, port))
     # s.listen(1)
     # conn, addr = s.accept()
 
@@ -131,11 +132,11 @@ def challenge() :
     envoyerAsym(challenge_envoye)
 
     #récupération du challenge et de la clé symétrique déchiffrés, du récepteur
-    challenge_recu, cle_symetrique, chalenge_bob = recevoirAsym().split("|||")
+    challenge_recu, cle_symetrique = recevoirAsym().split("|||")
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
     if challenge_envoye == challenge_recu :
-        return 1, cle_symetrique, challengeBob
+        return 1, cle_symetrique, "challengeBob"
     else :
         return 0, "", ""
     
@@ -160,6 +161,8 @@ while 1:
         ip=input("Saisir l'ip de la machine cible : ")
         print(ip)
         #s.connect((ip, port))
+        adresse_serveur=("",port)
+        s.bind(adresse_serveur)
 
         resultat, clefSym, challengeBob = challenge()
         if resultat == 1:
