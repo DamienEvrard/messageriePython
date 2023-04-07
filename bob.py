@@ -1,9 +1,3 @@
-#prompt message pour get IP cible
-#initialiser communication en asymetrique
-#challenger 
-#si challenge ok
-#envoyer clef symetrique
-#communiquer les messages prompt
 import math
 import random
 import string
@@ -24,10 +18,13 @@ def chiffrerAsym(message) :
         public_key_recepteur = RSA.import_key(f.read())
 
     # On crée l'encrypteur à partir de la clé publique
-    cipher_message = PKCS1_OAEP.new(public_key_recepteur)
+    cipher = PKCS1_OAEP.new(public_key_recepteur)
+
+    # On chiffre le message avec la clé publique
+    ciphertext = cipher.encrypt(message.encode()) 
 
     # On chiffre le challenge avec la clé publique
-    return cipher_message.encrypt(message.encode())
+    return ciphertext
 
 def dechiffrerAsym(message) :
 
@@ -39,19 +36,18 @@ def dechiffrerAsym(message) :
     cipher = PKCS1_OAEP.new(private_key)
 
     # On décrypte le message avec la clé privée
-    message_dechiffre = cipher.decrypt(message[0]) 
+    message_dechiffre = cipher.decrypt(message) 
 
     return message_dechiffre
 
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé publique du récepteur
 def envoyerAsym(message):
-    messageEncrypted=chiffrerAsym(message)
-    print(messageEncrypted)
-    adresse_serveur = (ip, port)
-    s.sendto(messageEncrypted, adresse_serveur)
-    print("message envoyé")
 
+    serveur_adress = (ip, port)
+
+    message_chiffre = chiffrerAsym(message)
+    s.sendto(message_chiffre, serveur_adress)
 
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
@@ -65,28 +61,26 @@ def envoyerSym(message):
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
 # qui sera dechiffré grace a la la clé privée de l'émetteur
 def recevoirAsym():
-    # s.bind((ip, port))
-    # s.listen(1)
-    # conn, addr = s.accept()
 
-    data = s.recvfrom(1024)
-    message = data
-    #conn.close() 
-    messageDecrypted=dechiffrerAsym(message)
-    return messageDecrypted
+    serveur_adress = ('', port)
+    s.bind(serveur_adress)
+
+    message, addressEnvoi = s.recvfrom(4096)
+    
+    message_decrypte=dechiffrerAsym(message)
+
+    return message_decrypte
 
 
 # fait attendre la machine jusqu'a reception d'un message chiffré qui sera dechiffré 
 # grace a la la clef symetrique obtenue lors de challenge avec la machine cible
 def recevoirSym():
-    # s.bind((ip, port))
-    # s.listen(1)
-    # conn, addr = s.accept()
-    print ("réception")
+    
+    print ("réception Symetrique")
     data = s.recvfrom(1024)
     print(data)
     message = str(data)
-    #conn.close() 
+    
     messageDecrypted=dechiffrerSym(message)
     return messageDecrypted
 
@@ -101,9 +95,7 @@ def challenge() :
     letters = string.ascii_lowercase
     challengeBob = ''.join(random.choice(letters) for i in range(10))
     #construction du message
-    #messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym) + "|||"+ str(challengeBob)
-    
-    messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym)
+    messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym) + "|||"+ str(challengeBob)
 
     envoyerAsym(messageEnvoye)
 
@@ -145,7 +137,7 @@ def generationClefSym():
 #_______________________________________________________________________________________________________________
 
 ip=""
-port = 1234
+port = 4444
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clefSym=""
 
@@ -159,8 +151,6 @@ while 1:
     
     if choix == "1":
         ip=input("saisir l'ip de la machine cible : ")
-        adresse_serveur = ('', port)
-        s.bind(adresse_serveur)
 
         resultat= challenge()
         if resultat == 1:
