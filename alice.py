@@ -136,6 +136,8 @@ port = 1234
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 clefSym=""
 
+
+
 #boucle infinie qui affiche un menu afin de selectionner l'action a effectuer
 while 1:
     print("1: Saisir l'ip de la machine cible")
@@ -146,7 +148,8 @@ while 1:
     
     if choix == "1":
         ip=input("Saisir l'ip de la machine cible : ")
-        s.connect((ip, port))
+        print(ip)
+        #s.connect((ip, port))
         resultat, clefSym, challengeBob = challenge()
         if resultat == 1:
             print("Challenge OK")
