@@ -15,7 +15,7 @@ from Crypto.Hash import SHA256
 import pickle
 import socket
 import sys
-
+from Crypto import get_random_bytes
 
 def chiffrerAsym(message) :
 
@@ -55,7 +55,7 @@ def envoyerAsym(message):
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
-    messageEncrypted=encryptAES(message)
+    messageEncrypted=chiffrerSym(message)
     s.sendall(messageEncrypted.encode())
 
 
@@ -81,7 +81,7 @@ def recevoirSym():
 
     message = conn.recv(1024).decode()
     conn.close() 
-    messageDecrypted=decryptAES(message)
+    messageDecrypted=dechiffrerSym(message)
     return messageDecrypted
 
 
@@ -89,21 +89,48 @@ def recevoirSym():
 # et recupere la clef symetrique pour la suite des echanges
 def challenge() :
 
+    challengeAlice=recevoirAsym()
+    clefSym=generationClefSym()
     #génération du challenge : chaîne de caractère aléatoire de 10 caractères
     letters = string.ascii_lowercase
-    challenge_envoye = ''.join(random.choice(letters) for i in range(10))
-
-    # envoyerAsym prend en paramètre le challenge en clair, le chiffre et l'envoie
-    envoyerAsym(challenge_envoye)
-
-    #récupération du challenge déchiffré du récepteur
-    challenge_recu, cle = recevoirAsym().split("|||")
+    challengeBob = ''.join(random.choice(letters) for i in range(10))
+    #construction du message
+    messageEnvoye=challengeAlice + "|||"+ clefSym + "|||"+ challengeBob
+    envoyerAsym(messageEnvoye)
+    challenge_recu=recevoirSym()
 
     #comparaison du contenu du message déchiffré au challenge d’origine et validation ou non
-    if challenge_envoye == challenge_recu :
-        return 1, cle
+    if challengeBob == challenge_recu :
+        return 1
     else :
-        return 0, ""
+        return 0
+    
+# permet de chiffrer un message grâce à la clé symétrique
+def chiffrerSym(message) :
+
+    # On crée l'encrypteur à partir de la clé symétrique
+    cipher = AES.new(clefSym.encode('utf-8'), AES.MODE_CFB, 'This is an IV456'.encode('utf-8'))
+
+    # On chiffre le message avec la clé symétrique
+    cipher_text = cipher.encrypt(message)
+
+    return cipher_text
+
+# permet de déchiffrer un message grâce à la clé symétrique
+def dechiffrerSym(message) :
+
+    # On crée le décrypteur à partir de la clé symétrique
+    cipher = AES.new(clefSym.encode('utf-8'), AES.MODE_CFB, 'This is an IV456'.encode('utf-8'))
+    
+    # On déchiffre le message avec la clé symétrique
+    message_dechiffre = cipher.decrypt(message)
+
+    return message_dechiffre
+
+
+#genere une clef symetrique de taille 32 bytes
+def generationClefSym():
+    return get_random_bytes(32)
     
 #_______________________________________________________________________________________________________________
 
@@ -123,12 +150,13 @@ while 1:
     if choix == "1":
         ip=input("saisir l'ip de la machine cible")
         s.connect((ip, port))
-        resultat, clefSym = challenge()
-        if resultat == 1 :
+        resultat= challenge()
+        if resultat == 1:
             print("challenge OK")
         else:
             s.close()
-            print("challenge non OK") 
+            print("challenge non OK")
+        
 
     elif choix == "2":
         if ip=="":
