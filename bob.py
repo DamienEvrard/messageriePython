@@ -27,9 +27,7 @@ def chiffrerAsym(message) :
     cipher_message = PKCS1_OAEP.new(public_key_recepteur)
 
     # On chiffre le challenge avec la clé publique
-    ciphertext_message = cipher_message.encrypt(message.encode())
-
-    return ciphertext_message
+    return cipher_message.encrypt(message.encode())
 
 def dechiffrerAsym(message) :
 
@@ -41,7 +39,7 @@ def dechiffrerAsym(message) :
     cipher = PKCS1_OAEP.new(private_key)
 
     # On décrypte le message avec la clé privée
-    message_dechiffre = cipher.decrypt(message) 
+    message_dechiffre = cipher.decrypt(message[0]) 
 
     return message_dechiffre
 
@@ -67,7 +65,7 @@ def recevoirAsym():
     # conn, addr = s.accept()
 
     data = s.recvfrom(1024)
-    message = str(data)
+    message = data
     #conn.close() 
     messageDecrypted=dechiffrerAsym(message)
     return messageDecrypted
@@ -97,7 +95,8 @@ def challenge() :
     letters = string.ascii_lowercase
     challengeBob = ''.join(random.choice(letters) for i in range(10))
     #construction du message
-    messageEnvoye=challengeAlice + "|||"+ clefSym + "|||"+ challengeBob
+    messageEnvoye=str(challengeAlice) + "|||"+ str(clefSym) + "|||"+ str(challengeBob)
+    
     envoyerAsym(messageEnvoye)
     challenge_recu=recevoirSym()
 
@@ -112,7 +111,6 @@ def chiffrerSym(message) :
 
     # On crée l'encrypteur à partir de la clé symétrique
     cipher = AES.new(clefSym.encode('utf-8'), AES.MODE_CFB, 'This is an IV456'.encode('utf-8'))
-
     # On chiffre le message avec la clé symétrique
     cipher_text = cipher.encrypt(message)
 
