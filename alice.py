@@ -72,26 +72,35 @@ def dechiffrerSym(message) :
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé publique du récepteur
 def envoyerAsym(message):
+
+    adresse_serveur = (ip, port)
     messageEncrypted=chiffrerAsym(message)
-    s.sendall(messageEncrypted)
+
+    s.sendto(messageEncrypted, adresse_serveur)
+    #s.sendall(messageEncrypted.encode())
 
 
 # permet d'envoyer un message (string) en le chiffrant avec 
 # la clé symétrique obtenue lors du challenge avec le récepteur
 def envoyerSym(message):
+
+    adresse_serveur = (ip, port)
     messageEncrypted=chiffrerSym(message)
-    s.sendall(messageEncrypted.encode())
+
+    s.sendto(messageEncrypted, adresse_serveur)
+    #s.sendall(messageEncrypted.encode())
 
 
 # fait attendre la machine jusqu'a reception d'un message chiffré en asymétrique
 # qui sera dechiffré grace a la la clé privée de l'émetteur
 def recevoirAsym():
-    s.bind((ip, port))
-    s.listen(1)
-    conn, addr = s.accept()
+   # s.bind((ip, port))
+    # s.listen(1)
+    # conn, addr = s.accept()
 
-    message = conn.recv(1024).decode()
-    conn.close() 
+    data = s.recvfrom(4096)
+    message = str(data)
+    #conn.close() 
     messageDecrypted=dechiffrerAsym(message)
     return messageDecrypted
 
@@ -99,12 +108,13 @@ def recevoirAsym():
 # fait attendre la machine jusqu'a reception d'un message chiffré qui sera dechiffré 
 # grace a la la clef symetrique obtenue lors de challenge avec la machine cible
 def recevoirSym():
-    s.bind((ip, port))
-    s.listen(1)
-    conn, addr = s.accept()
+    # s.bind((ip, port))
+    # s.listen(1)
+    # conn, addr = s.accept()
 
-    message = conn.recv(1024).decode()
-    conn.close() 
+    data = s.recvfrom(4096)
+    message = str(data)
+    #conn.close() 
     messageDecrypted=dechiffrerSym(message)
     return messageDecrypted
 
@@ -149,7 +159,8 @@ while 1:
     if choix == "1":
         ip=input("Saisir l'ip de la machine cible : ")
         print(ip)
-        s.connect((ip, port))
+        #s.connect((ip, port))
+
         resultat, clefSym, challengeBob = challenge()
         if resultat == 1:
             print("Challenge OK")
